@@ -1,0 +1,767 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Navbar with Dropdowns, Login & Cart</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/fontawesome.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}"> <!-- Load static CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background-color: #f8f9fa;
+    }
+
+    /* Header and Navbar Styles */
+    .navbar {
+      background: linear-gradient(90deg, #007bff, #00bfff) !important; /* Gradient navbar */
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .navbar-brand img {
+      height: 80px;
+      width: 120px; /* Adjust width for ellipse shape */
+      border-radius: 50%; /* Ellipse shape */
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .navbar-brand img:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+    }
+    .nav-link {
+      color: #dcdcdc !important; /* Light gray links */
+      transition: color 0.3s ease;
+    }
+    .nav-link:hover, .nav-link.active {
+      color: white !important;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    }
+    .dropdown-menu {
+      background-color: white; /* Light background for dropdown */ 
+    }
+    .dropdown-item:hover {
+      background-color: #007bff;
+      color: white;
+    }
+    .search-form input {
+      background-color: #212529; /* Dark input field */
+      color: white;
+      border: none;
+    }
+    .search-form input::placeholder {
+      color: #bbb;
+    }
+    .search-form button {
+      border-color: white;
+      color: white;
+    }
+    .search-form button:hover {
+      background-color: white;
+      color: #007bff;
+    }
+    .cart-btn {
+      position: relative;
+    }
+    .cart-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background-color: red;
+      color: white;
+      font-size: 12px;
+      border-radius: 50%;
+      padding: 3px 7px;
+    }
+
+    /* Carousel Styles */
+    .carousel-caption h5, .carousel-caption p {
+      color: #fff !important; /* White text for better visibility */
+    }
+    .carousel-item {
+      height: 500px;
+      background-color: #000;
+    }
+    .carousel-item img {
+      height: 100%;
+      object-fit: cover;
+    }
+    /* Categories Section */
+    .categories {
+      margin: 50px 0;
+    }
+    .categories .row {
+      display: flex;
+      flex-wrap: nowrap; /* Ensure all app are in one row */
+      overflow-x: auto; /* Add scroll if too many images */
+    }
+    .col-3 {
+      flex: 0 0 20%; /* Adjust width for 5 images in one row */
+      min-width: 400px;
+      margin-bottom: 60px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .col-3 img {
+      width: 100%;
+      border-radius: 10px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .col-3:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    .col-3:hover img {
+      transform: scale(1.05);
+    }
+
+    /* Featured Products Section */
+    .small-container {
+      max-width: 1080px;
+      margin: auto;
+      padding-left: 25px;
+      padding-right: 25px;
+    }
+    .title {
+      text-align: center;
+      margin: 0 auto 80px;
+      position: relative;
+      line-height: 60px;
+      color: #555;
+    }
+    .col-4 {
+      flex: 0 0 25%; /* Ensure 4 products in one row */
+      max-width: 25%; /* Ensure 4 products in one row */
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    .col-4 img {
+      width: 100%;
+      border-radius: 10px;
+    }
+    .product-card {
+      text-align: center;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    .product-card h4 {
+      font-size: 18px;
+      margin: 10px 0;
+      color: #333;
+    }
+    .product-card .rating {
+      color: #ffc107;
+      margin-bottom: 10px;
+    }
+    .product-card .rating .fa-star-o {
+      color: #ccc;
+    }
+    .product-card p {
+      font-size: 16px;
+      color: #007bff;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    /* Brand Logos */
+    .brand-logos {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      padding: 20px;
+      background-color: white;
+      margin-top: 20px;
+    }
+    .brand-logos img {
+      width: 100px;
+      height: auto;
+      margin: 10px;
+      transition: transform 0.3s ease-in-out;
+    }
+    .brand-logos img:hover {
+      transform: scale(1.1);
+    }
+
+    /* Best Deals Section */
+    .best-deals {
+      margin: 50px 0;
+      text-align: center;
+    }
+    .product-slider {
+      overflow-x: auto;
+      white-space: nowrap;
+      padding-bottom: 10px;
+    }
+    .product-slider .row {
+      display: flex;
+      flex-wrap: nowrap;
+    }
+    .product {
+      text-align: center;
+      padding: 10px;
+      flex: 0 0 auto;
+    }
+    .product img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    .product-name {
+      font-size: 14px;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+    .product-price {
+      font-size: 14px;
+      color: green;
+    }
+
+
+    /* Footer Styles */
+    .footer {
+      background-color: #2d2d2d;
+      color: #fff;
+      padding: 40px 20px;
+      display: flex;
+      flex-wrap: nowrap; /* Ensure all sections are in one row */
+      justify-content: space-between;
+      overflow-x: auto; /* Add scroll if too many sections */
+    }
+
+    .footer-section {
+      flex: 0 0 auto; /* Allow sections to shrink/grow as needed */
+      min-width: 200px;
+      margin: 10px 20px;
+    }
+
+    .footer-section h4 {
+      font-size: 18px;
+      margin-bottom: 15px;
+      color: #fff;
+    }
+
+    .footer-section ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .footer-section ul li {
+      margin-bottom: 10px;
+    }
+
+    .footer-section ul li a {
+      color: #ccc;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-section ul li a:hover {
+      color: #fff;
+    }
+
+    .footer-section p {
+      color: #ccc;
+      margin: 5px 0;
+    }
+
+    .footer-section p a {
+      color: #ccc;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-section p a:hover {
+      color: #fff;
+    }
+
+    .footer-section .social-icons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .footer-section .social-icons a {
+      color: #ccc;
+      font-size: 20px;
+      transition: color 0.3s ease;
+    }
+
+    .footer-section .social-icons a:hover {
+      color: #fff;
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding: 20px;
+      background-color: #1a1a1a;
+      color: #ccc;
+      font-size: 14px;
+    }
+
+    .footer-bottom a {
+      color: #ccc;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-bottom a:hover {
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{% url 'home' %}">
+        <img src="{% static 'brand logo.jpg' %}" alt="Brand Logo"> <!-- Load static image -->
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link active" href="{% url 'home' %}" aria-current="page">Home</a> <!-- Use Django URL routing -->
+          </li>
+
+          <!-- Men Dropdown -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="menDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Men
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="menDropdown">
+              <li><a class="dropdown-item" href="{% url 'Shirts' %}">Shirts</a></li>
+              <li><a class="dropdown-item" href="{% url 'Trousers' %}">Trousers</a></li>
+              <li><a class="dropdown-item" href="{% url 'Shoes' %}">Shoes</a></li>
+            </ul>
+          </li>
+
+          <!-- Women Dropdown -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="womenDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Women
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="womenDropdown">
+              <li><a class="dropdown-item" href="{% url 'Women_Dresses' %}">Dresses</a></li>
+              <li><a class="dropdown-item" href="{% url 'WomenHandbags' %}">Handbags</a></li>
+              <li><a class="dropdown-item" href="{% url 'WomenJewelry' %}">Jewelry</a></li>
+            </ul>
+          </li>
+
+          <!-- Kids Dropdown -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="kidsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Kids</a>
+            <ul class="dropdown-menu" aria-labelledby="kidsDropdown">
+              <li><a class="dropdown-item" href="{% url 'Kids_ts' %}">T-Shirts</a></li>
+              <li><a class="dropdown-item" href="{% url 'Toys' %}">Toys</a></li>
+              <li><a class="dropdown-item" href="{% url 'School_Bags' %}">School Bags</a></li>
+            </ul>
+          </li>
+
+          <!-- Beauty Dropdown -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="beautyDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Beauty
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="beautyDropdown">
+              <li><a class="dropdown-item" href="{% url 'makeup' %}">Makeup</a></li>
+              <li><a class="dropdown-item" href="{% url 'skincare' %}">Skincare</a></li>
+              <li><a class="dropdown-item" href="{% url 'haircare' %}">Haircare</a></li>
+            </ul>
+          </li>
+
+          <!-- Electronics Dropdown -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="electronicsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Electronics
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="electronicsDropdown">
+              <li><a class="dropdown-item" href="{% url 'smartphone' %}">Smartphones</a></li>
+              <li><a class="dropdown-item" href="{% url 'laptop' %}">Laptops</a></li>
+              <li><a class="dropdown-item" href="{% url 'headphone_charger' %}">Headphones & Chargers</a></li>
+            </ul>
+          </li>
+        </ul>
+
+        <!-- Search Form -->
+        <form class="d-flex search-form" action="{% url 'search' %}" method="GET">
+          <input class="form-control me-2" type="search" placeholder="Search" name="q">
+          <button class="btn btn-outline-light" type="submit">Search</button>
+        </form>
+
+        <!-- Cart Button -->
+        <a href="{% url 'cart' %}" class="btn btn-light ms-3 cart-btn"> <!-- Use Django URL routing -->
+          <i class="fas fa-shopping-cart"></i> Cart
+          <span class="cart-badge" id="cart-count">0</span>
+        </a>
+
+        <!-- Login Button -->
+        <a href="{% url 'login' %}" class="btn btn-light ms-3">Login</a> <!-- Use Django URL routing -->
+      </div>
+    </div>
+  </nav>
+
+  <!-- Carousel -->
+  <div id="carouselExampleDark" class="carousel carousel-dark slide">
+    <div class="carousel-indicators">
+      <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+      <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="1" aria-label="Slide 2"></button>
+      <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner" style="height: 500px;">
+      <div class="carousel-item active" data-bs-interval="10000" style="background-color: white; height: 100%;">
+        <img src="{% static '50sale.jpg' %}" class="d-block w-75 mx-auto" alt="Exclusive Offer on Dresses"> <!-- Load static image -->
+        <div class="carousel-caption d-none d-md-block">
+          <h5>Exclusive Offer on Dresses</h5>
+          <p>Get up to 50% off on selected dresses!</p>
+        </div>
+      </div>
+      <div class="carousel-item" data-bs-interval="2000" style="background-color: white; height: 100%;">
+        <img src="{% static 'Beauty-Products.jpg' %}" class="d-block w-75 mx-auto" alt="Beauty Bonanza"> <!-- Load static image -->
+        <div class="carousel-caption d-none d-md-block">
+          <h5>Beauty Bonanza</h5>
+          <p>Save 30% on top beauty products!</p>
+        </div>
+      </div>
+      <div class="carousel-item" style="background-color: white; height: 100%;">
+        <img src="{% static 'b1g1sale.jpg' %}" class="d-block w-75 mx-auto" alt="Special Dress Sale"> <!-- Load static image -->
+        <div class="carousel-caption d-none d-md-block">
+          <h5>Special Dress Sale</h5>
+          <p>Buy 1 get 1 free on all dresses!</p>
+        </div>
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+
+  <!-- Featured Categories -->
+  <div class="categories">
+    <h2 class="title">Categories</h2>
+    <div class="small-container">
+      <div class="row">
+        <div class="col-3">
+        <img src="{% static 'kid2.jpg' %}" class="d-block w-75 mx-auto" alt="Kids Category"> 
+        </div>
+        <div class="col-3">
+          <img src="{% static 'IMG-20250304-WA0015.jpg' %}" class="d-block w-75 mx-auto" alt="Category 2"> 
+        </div>
+        <div class="col-3">
+          <img src="{% static 'IMG-20250304-WA0014.jpg' %}" class="d-block w-75 mx-auto" alt="Category 3"> 
+        </div>
+        <div class="col-3">
+          <img src="{% static 'IMG-20250304-WA0010.jpg' %}" class="d-block w-75 mx-auto" alt="Category 4"> 
+        </div>
+        <div class="col-3">
+          <img src="{% static 'mshoe.jpg' %}" class="d-block w-75 mx-auto" alt="Men's Shoes"> 
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Featured Products -->
+  <div class="small-container">
+    <h2 class="title">Featured Products</h2>
+    <div class="row">
+      <!-- Product 1 -->
+      <div class="col-4">
+        <div class="product-card">
+          <img src="{% static 'IMG-20250304-WA0012.jpg' %}" class="d-block w-75 mx-auto" alt="Designing Kurti Set"> 
+          <h4>Designing Kurti Set</h4>
+          <div class="rating">
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star-o"></i>
+          </div>
+          <p>₹550.00</p>
+        </div>
+      </div>
+
+      <!-- Product 2 -->
+      <div class="col-4">
+        <div class="product-card">
+          <img src="{% static 'IMG-20250304-WA0019.jpg' %}" class="d-block w-75 mx-auto" alt="Women Long Gown"> 
+          <h4>Women Long Gown</h4>
+          <div class="rating">
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star-half-o"></i>
+          </div>
+          <p>₹880.00</p>
+        </div>
+      </div>
+
+      <!-- Product 3 -->
+      <div class="col-4">
+        <div class="product-card">
+          <img src="{% static 'IMG-20250304-WA0009.jpg' %}" class="d-block w-75 mx-auto" alt="Blue Printed Shirt"> 
+          <h4>Blue Printed Shirt</h4>
+          <div class="rating">
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star-o"></i>
+          </div>
+          <p>₹660.00</p>
+        </div>
+      </div>
+
+      <!-- Product 4 -->
+      <div class="col-4">
+        <div class="product-card">
+          <img src="{% static 'IMG-20250304-WA0007.jpg' %}" class="d-block w-75 mx-auto" alt="Printed Hoodie"> 
+          <h4>Printed Hoodie</h4>
+          <div class="rating">
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star-half-o"></i>
+          </div>
+          <p>₹590.00</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Brand Logos -->
+  <div class="brand-logos">
+    <img src="{% static 'brand1.jpg' %}"  alt="Brand 1"> 
+    <img src="{% static 'brand2.jpg' %}"  alt="Brand 2"> 
+    <img src="{% static 'brand3.jpg' %}"  alt="Brand 3"> 
+    <img src="{% static 'brand4.jpg' %}"  alt="Brand 4"> 
+    <img src="{% static 'brand5.jpg' %}"  alt="Brand 5"> 
+    <img src="{% static 'brand6.jpg' %}"  alt="Brand 6"> 
+    <img src="{% static 'brand7.jpg' %}"  alt="Brand 7"> 
+    <img src="{% static 'brand8.jpg' %}" alt="Brand 8"> 
+    <img src="{% static 'brand9.png' %}" alt="Brand 9"> 
+  </div>
+
+ <!-- Best Deals on Smartphones -->
+ <div class="best-deals">
+  <div class="small-container">
+    <h2 class="text-center mb-4">Best Deals on Smartphones</h2>
+    <div class="product-slider">
+      <div class="row flex-nowrap">
+        <div class="col-md-2 col-6 product">
+          <img src="{% static 'product1.jpg' %}" alt="Product 1"> 
+          <p class="product-name">Motorola Edge 50 Pro</p>
+          <p class="product-price">Just ₹20,999*</p>
+        </div>
+        <div class="col-md-2 col-6 product">
+          <img src="{% static 'product2.jpg' %}" alt="Product 2"> 
+          <p class="product-name">Vivo T3 5G</p>
+          <p class="product-price">From ₹16,999*</p>
+        </div>
+        <div class="col-md-2 col-6 product">
+          <img src="{% static 'product3.jpg' %}" alt="Product 3"> 
+          <p class="product-name">CMF Phone 1 (8GB)</p>
+          <p class="product-price">Just ₹13,999*</p>
+        </div>
+        <div class="col-md-2 col-6 product">
+          <img src="{% static 'product4.jpg' %}" alt="Product 4"> 
+          <p class="product-name">Samsung A53 (16GB)</p>
+          <p class="product-price">Just ₹40,999*</p>
+        </div>
+        <div class="col-md-2 col-6 product">
+          <img src="{% static 'product5.jpg' %}" alt="Product 5"> 
+          <p class="product-name">iPhone 12 (16GB)</p>
+          <p class="product-price">Just ₹80,999*</p>
+        </div>
+        <div class="col-md-2 col-6 product">
+          <img src="{% static 'product6.jpg' %}" alt="Product 6"> 
+          <p class="product-name">Oppo Reno 8 (8GB)</p>
+          <p class="product-price">Just ₹16,999*</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Clothes Collection -->
+<div class="best-deals">
+  <div class="small-container">
+    <h2 class="text-center mb-4">Trending in Fashion</h2>
+    <div class="product-slider">
+      <div class="row flex-nowrap">
+        <div class="col-md-2 col-6 product">
+          <img src="{% static 'clothes1.jpg' %}" alt="Clothing 1"> 
+          <p class="product-name">Men's Casual Shirt</p>
+          <p class="product-price">₹899</p>
+        </div>
+        <div class="col-md-2 col-6 product">
+          <img src="{% static 'clothes2.jpg' %}" alt="Clothing 2"> 
+          <p class="product-name">Women's Designer Saree</p>
+          <p class="product-price">₹1,499</p>
+        </div>
+        <div class="col-md-2 col-6 product">
+          <img src="{% static 'clothes3.webp' %}" alt="Clothing 3"> 
+          <p class="product-name">Unisex Sneakers</p>
+          <p class="product-price">₹2,999</p>
+        </div>
+    <div class="col-md-2 col-6 product">
+      <img src="{% static 'clothes4.jpg' %}" alt="Clothing 4"> 
+      <p class="product-name">Home Decor</p>
+          <p class="product-price">₹999</p>
+        </div>
+    <div class="col-md-2 col-6 product">
+      <img src="{% static 'clothes5.jpg' %}" alt="Clothing 5"> 
+      <p class="product-name">Electronics</p>
+          <p class="product-price">₹7,000</p>
+        </div>
+    <div class="col-md-2 col-6 product">
+      <img src="{% static 'clothes6.jpg' %}" alt="Clothing 6"> 
+          <p class="product-name">Makeup</p>
+          <p class="product-price">₹99</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Makeup Collection -->
+<div class="best-deals">
+  <div class="small-container">
+    <h2 class="text-center mb-4">Best Deals on Makeup</h2>
+    <div class="product-slider">
+      <div class="row flex-nowrap">
+        <div class="col-md-2 col-6 product">
+          <img src="{% static 'makeup1.webp' %}" alt="Makeup 1"> 
+         <p class="product-name">Matte Lipstick</p>
+          <p class="product-price">₹499</p>
+        </div>
+        <div class="col-md-2 col-6 product">
+          <img src="{% static 'makeup2.jpg' %}" alt="Makeup 2"> 
+          <p class="product-name">Eyeshadow Palette</p>
+          <p class="product-price">₹799</p>
+        </div>
+        <div class="col-md-2 col-6 product">
+          <img src="{% static 'makeup3.jpg' %}" alt="Makeup 3"> 
+          <p class="product-name">Foundation</p>
+          <p class="product-price">₹1,199</p>
+        </div>
+    <div class="col-md-2 col-6 product">
+      <img src="{% static 'makeup4.jpg' %}" alt="Makeup 4"> 
+          <p class="product-name">Concealer</p>
+          <p class="product-price">₹1,199</p>
+        </div>
+    <div class="col-md-2 col-6 product">
+      <img src="{% static 'makeup5.jpg' %}" alt="Makeup 5"> 
+          <p class="product-name">Primer</p>
+          <p class="product-price">₹1,199</p>
+        </div>
+    <div class="col-md-2 col-6 product">
+      <img src="{% static 'makeup6.webp' %}" alt="Makeup 6"> 
+          <p class="product-name">Brushes</p>
+          <p class="product-price">₹1,199</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-section">
+      <h4><a href="#">ABOUT</a></h4>
+      <ul>
+        <li><a href="#">Contact Us</a></li>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">GMart Stories</a></li>
+        <li><a href="#">Press</a></li>
+        <li><a href="#">Become a Seller</a></li>
+        <li><a href="#">Advertise</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-section">
+      <h4><a href="#">GROUP COMPANIES</a></h4>
+      <ul>
+        <li><a href="#">Myntra</a></li>
+        <li><a href="#">Cleartrip</a></li>
+        <li><a href="#">Shopsy</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-section">
+      <h4><a href="#">HELP</a></h4>
+      <ul>
+        <li><a href="#">Payments</a></li>
+        <li><a href="#">Shipping</a></li>
+        <li><a href="#">Cancellation & Returns</a></li>
+        <li><a href="#">FAQ</a></li>
+        <li><a href="#">Gift Cards</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-section">
+      <h4><a href="#">CONSUMER POLICY</a></h4>
+      <ul>
+        <li><a href="#">Cancellation & Returns</a></li>
+        <li><a href="#">Terms Of Use</a></li>
+        <li><a href="#">Help Center</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-section">
+      <h4><a href="#">Mail Us</a></h4>
+      <p><a href="#">G Mart Private Limited,</a></p>
+      <p><a href="#">25 Weston St., Mission Row,</a></p>
+      <p><a href="#">Esplanade, Pilkhana,</a></p>
+      <p><a href="#">Kolkata, 700012</a></p>
+      <p><a href="#">West Bengal, India</a></p>
+    </div>
+
+    <div class="footer-section">
+      <h4><a href="#">Registered Office Address</a></h4>
+      <p><a href="#">G Mart Private Limited,</a></p>
+      <p><a href="#">25 Weston St., Mission Row,</a></p>
+      <p><a href="#">Esplanade, Pilkhana,</a></p>
+      <p><a href="#">Kolkata, 700012</a></p>
+      <p><a href="#">West Bengal, India</a></p>
+      <p><a href="#">CIN: U51109KA2012PTC066107</a></p>
+      <p><a href="#">Telephone: 9091023424 / 85828 07855</a></p>
+    </div>
+  </footer>
+
+  <!-- Footer Bottom -->
+  <div class="footer-bottom">
+    <p>&copy; 2024-2025 <a href="#">GMart.com</a></p>
+    <p><a href="#">Privacy Policy</a> | <a href="#">Terms of Use</a></p>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Simulating cart count (replace with dynamic cart logic later)
+    let cartCount = 0; // Change this value dynamically based on the number of items in the cart
+    document.getElementById("cart-count").innerText = cartCount;
+  </script>
+</body>
+</html>
